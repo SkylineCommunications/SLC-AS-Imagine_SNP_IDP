@@ -1,0 +1,105 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{AFB50BF5-736B-43E2-8F0C-530AA1BA07CF}"
+	ProjectSection(SolutionItems) = preProject
+		Internal\.editorconfig = Internal\.editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E7F380ED-5E9A-4044-9BA3-141199EF7A5B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dlls", "Dlls", "{D06F93FD-FE27-4240-94E6-B29C8854C9FD}"
+	ProjectSection(SolutionItems) = preProject
+		Dlls\ABOUT.md = Dlls\ABOUT.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CompanionFiles", "CompanionFiles", "{59B80C40-ABE1-498F-92A8-20C483D07DDC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Skyline DataMiner", "Skyline DataMiner", "{609B875D-CDA6-495C-BE68-3FD66BA0DE95}"
+	ProjectSection(SolutionItems) = preProject
+		CompanionFiles\Skyline DataMiner\AboutThisFolder.md = CompanionFiles\Skyline DataMiner\AboutThisFolder.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{1F92A810-B5EF-41BC-BA8B-C14F6675BF71}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\ABOUT.md = Documentation\ABOUT.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F8938D60-51A0-4880-9CFC-19C66379BB5D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Analysis", "Code Analysis", "{C4F2AB6B-A9F0-45B9-A914-A9AACBE372CB}"
+	ProjectSection(SolutionItems) = preProject
+		Internal\Code Analysis\qaction-debug.ruleset = Internal\Code Analysis\qaction-debug.ruleset
+		Internal\Code Analysis\qaction-release.ruleset = Internal\Code Analysis\qaction-release.ruleset
+		Internal\Code Analysis\stylecop.json = Internal\Code Analysis\stylecop.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDP_Custom_ConfigurationBackup_ImagineSNP", "IDP_Custom_ConfigurationBackup_ImagineSNP", "{9FA12F62-49C8-4D7D-8172-059C76A247C3}"
+	ProjectSection(SolutionItems) = preProject
+		IDP_Custom_ConfigurationBackup_ImagineSNP.xml = IDP_Custom_ConfigurationBackup_ImagineSNP.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{DFC4489F-F962-4131-BEFA-DBC17E9460F2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationBackup_ImagineSNP_6", "IDP_Custom_ConfigurationBackup_ImagineSNP_6\IDP_Custom_ConfigurationBackup_ImagineSNP_6.csproj", "{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDP_Custom_ConfigurationUpdate_ImagineSNP", "IDP_Custom_ConfigurationUpdate_ImagineSNP", "{7AAB721C-22DF-4F6B-8061-C01C4DEE9D82}"
+	ProjectSection(SolutionItems) = preProject
+		IDP_Custom_ConfigurationUpdate_ImagineSNP.xml = IDP_Custom_ConfigurationUpdate_ImagineSNP.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{14E02642-7882-4D84-86B4-F597180381F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationUpdate_ImagineSNP_6", "IDP_Custom_ConfigurationUpdate_ImagineSNP_6\IDP_Custom_ConfigurationUpdate_ImagineSNP_6.csproj", "{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDP_Custom_SoftwareUpdate_ImagineSNP", "IDP_Custom_SoftwareUpdate_ImagineSNP", "{C2036E2C-E843-43CA-922C-56F4E20D3410}"
+	ProjectSection(SolutionItems) = preProject
+		IDP_Custom_SoftwareUpdate_ImagineSNP.xml = IDP_Custom_SoftwareUpdate_ImagineSNP.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{33AA502C-561C-4CD8-A065-DD13F7216AFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_SoftwareUpdate_ImagineSNP_6", "IDP_Custom_SoftwareUpdate_ImagineSNP_6\IDP_Custom_SoftwareUpdate_ImagineSNP_6.csproj", "{D522125E-A383-46AF-A656-237CA83D8231}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D522125E-A383-46AF-A656-237CA83D8231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D522125E-A383-46AF-A656-237CA83D8231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D522125E-A383-46AF-A656-237CA83D8231}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D522125E-A383-46AF-A656-237CA83D8231}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{609B875D-CDA6-495C-BE68-3FD66BA0DE95} = {59B80C40-ABE1-498F-92A8-20C483D07DDC}
+		{C4F2AB6B-A9F0-45B9-A914-A9AACBE372CB} = {AFB50BF5-736B-43E2-8F0C-530AA1BA07CF}
+		{9FA12F62-49C8-4D7D-8172-059C76A247C3} = {E7F380ED-5E9A-4044-9BA3-141199EF7A5B}
+		{DFC4489F-F962-4131-BEFA-DBC17E9460F2} = {9FA12F62-49C8-4D7D-8172-059C76A247C3}
+		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB} = {DFC4489F-F962-4131-BEFA-DBC17E9460F2}
+		{7AAB721C-22DF-4F6B-8061-C01C4DEE9D82} = {E7F380ED-5E9A-4044-9BA3-141199EF7A5B}
+		{14E02642-7882-4D84-86B4-F597180381F4} = {7AAB721C-22DF-4F6B-8061-C01C4DEE9D82}
+		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44} = {14E02642-7882-4D84-86B4-F597180381F4}
+		{C2036E2C-E843-43CA-922C-56F4E20D3410} = {E7F380ED-5E9A-4044-9BA3-141199EF7A5B}
+		{33AA502C-561C-4CD8-A065-DD13F7216AFC} = {C2036E2C-E843-43CA-922C-56F4E20D3410}
+		{D522125E-A383-46AF-A656-237CA83D8231} = {33AA502C-561C-4CD8-A065-DD13F7216AFC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61067029-639C-435D-AF0F-65BCCC153973}
+	EndGlobalSection
+EndGlobal
