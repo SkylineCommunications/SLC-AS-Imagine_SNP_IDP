@@ -39,21 +39,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Analysis", "Code Analy
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDP_Custom_ConfigurationBackup_ImagineSNP", "IDP_Custom_ConfigurationBackup_ImagineSNP", "{9FA12F62-49C8-4D7D-8172-059C76A247C3}"
 	ProjectSection(SolutionItems) = preProject
-		IDP_Custom_ConfigurationBackup_ImagineSNP.xml = IDP_Custom_ConfigurationBackup_ImagineSNP.xml
+		IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp.xml = IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{DFC4489F-F962-4131-BEFA-DBC17E9460F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationBackup_ImagineSNP_6", "IDP_Custom_ConfigurationBackup_ImagineSNP_6\IDP_Custom_ConfigurationBackup_ImagineSNP_6.csproj", "{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDP_Custom_ConfigurationUpdate_ImagineSNP", "IDP_Custom_ConfigurationUpdate_ImagineSNP", "{7AAB721C-22DF-4F6B-8061-C01C4DEE9D82}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDP_Custom_ConfigurationUpdate_ImagineCommunicationsSnp", "IDP_Custom_ConfigurationUpdate_ImagineCommunicationsSnp", "{7AAB721C-22DF-4F6B-8061-C01C4DEE9D82}"
 	ProjectSection(SolutionItems) = preProject
-		IDP_Custom_ConfigurationUpdate_ImagineSNP.xml = IDP_Custom_ConfigurationUpdate_ImagineSNP.xml
+		IDP_Custom_ConfigurationUpdate_ImagineCommunicationsSnp.xml = IDP_Custom_ConfigurationUpdate_ImagineCommunicationsSnp.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{14E02642-7882-4D84-86B4-F597180381F4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationUpdate_ImagineSNP_6", "IDP_Custom_ConfigurationUpdate_ImagineSNP_6\IDP_Custom_ConfigurationUpdate_ImagineSNP_6.csproj", "{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDP_Custom_SoftwareUpdate_ImagineSNP", "IDP_Custom_SoftwareUpdate_ImagineSNP", "{C2036E2C-E843-43CA-922C-56F4E20D3410}"
 	ProjectSection(SolutionItems) = preProject
@@ -64,24 +60,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{33AA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_SoftwareUpdate_ImagineSNP_6", "IDP_Custom_SoftwareUpdate_ImagineSNP_6\IDP_Custom_SoftwareUpdate_ImagineSNP_6.csproj", "{D522125E-A383-46AF-A656-237CA83D8231}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationUpdate_ImagineCommunicationsSnp_6", "IDP_Custom_ConfigurationUpdate_ImagineCommunicationsSnp_6\IDP_Custom_ConfigurationUpdate_ImagineCommunicationsSnp_6.csproj", "{8D7C6DBB-3696-41FF-BBDB-B848E8C85919}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp_6", "IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp_6\IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp_6.csproj", "{E4E03673-4447-453D-B65A-80C88E6AC912}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D522125E-A383-46AF-A656-237CA83D8231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D522125E-A383-46AF-A656-237CA83D8231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D522125E-A383-46AF-A656-237CA83D8231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D522125E-A383-46AF-A656-237CA83D8231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D7C6DBB-3696-41FF-BBDB-B848E8C85919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D7C6DBB-3696-41FF-BBDB-B848E8C85919}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D7C6DBB-3696-41FF-BBDB-B848E8C85919}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D7C6DBB-3696-41FF-BBDB-B848E8C85919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4E03673-4447-453D-B65A-80C88E6AC912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4E03673-4447-453D-B65A-80C88E6AC912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4E03673-4447-453D-B65A-80C88E6AC912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4E03673-4447-453D-B65A-80C88E6AC912}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,13 +91,13 @@ Global
 		{C4F2AB6B-A9F0-45B9-A914-A9AACBE372CB} = {AFB50BF5-736B-43E2-8F0C-530AA1BA07CF}
 		{9FA12F62-49C8-4D7D-8172-059C76A247C3} = {E7F380ED-5E9A-4044-9BA3-141199EF7A5B}
 		{DFC4489F-F962-4131-BEFA-DBC17E9460F2} = {9FA12F62-49C8-4D7D-8172-059C76A247C3}
-		{B67925AC-C87A-4D7C-934B-612ECDFD0CBB} = {DFC4489F-F962-4131-BEFA-DBC17E9460F2}
 		{7AAB721C-22DF-4F6B-8061-C01C4DEE9D82} = {E7F380ED-5E9A-4044-9BA3-141199EF7A5B}
 		{14E02642-7882-4D84-86B4-F597180381F4} = {7AAB721C-22DF-4F6B-8061-C01C4DEE9D82}
-		{EE1B5E7A-580C-478E-A72D-394AE0AE2A44} = {14E02642-7882-4D84-86B4-F597180381F4}
 		{C2036E2C-E843-43CA-922C-56F4E20D3410} = {E7F380ED-5E9A-4044-9BA3-141199EF7A5B}
 		{33AA502C-561C-4CD8-A065-DD13F7216AFC} = {C2036E2C-E843-43CA-922C-56F4E20D3410}
 		{D522125E-A383-46AF-A656-237CA83D8231} = {33AA502C-561C-4CD8-A065-DD13F7216AFC}
+		{8D7C6DBB-3696-41FF-BBDB-B848E8C85919} = {14E02642-7882-4D84-86B4-F597180381F4}
+		{E4E03673-4447-453D-B65A-80C88E6AC912} = {DFC4489F-F962-4131-BEFA-DBC17E9460F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61067029-639C-435D-AF0F-65BCCC153973}

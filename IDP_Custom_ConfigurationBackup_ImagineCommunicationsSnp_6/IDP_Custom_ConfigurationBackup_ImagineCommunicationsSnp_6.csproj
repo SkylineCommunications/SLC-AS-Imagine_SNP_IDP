@@ -28,7 +28,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DisLinkedXmlFile="..\IDP_Custom_ConfigurationUpdate_ImagineSNP.xml" DisProjectType="automationScriptProject" DisLinkId="6" />
+      <UserProperties DisLinkedXmlFile="..\IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp.xml" DisProjectType="automationScriptProject" DisLinkId="6" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
