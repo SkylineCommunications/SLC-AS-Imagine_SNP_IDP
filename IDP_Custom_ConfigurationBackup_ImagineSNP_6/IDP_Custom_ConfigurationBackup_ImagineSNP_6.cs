@@ -61,7 +61,7 @@ using Skyline.DataMiner.Automation;
 using Skyline.DataMiner.DataMinerSolutions.IDP.ConfigurationManagement;
 using Skyline.DataMiner.DataMinerSolutions.IDP.Templates.Configuration;
 
-public partial class Script
+public class Script
 {
 	private Backup backupManager;
 

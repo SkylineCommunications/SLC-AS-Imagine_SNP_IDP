@@ -51,25 +51,22 @@ DATE		VERSION		AUTHOR			COMMENT
 using System;
 using System.Runtime.Serialization;
 
-public partial class Script
+[Serializable]
+public class BackupFailedException : Exception
 {
-	[Serializable]
-	public class BackupFailedException : Exception
+	public BackupFailedException()
 	{
-		public BackupFailedException()
-		{
-		}
+	}
 
-		public BackupFailedException(string message) : base(message)
-		{
-		}
+	public BackupFailedException(string message) : base(message)
+	{
+	}
 
-		public BackupFailedException(string message, Exception innerException) : base(message, innerException)
-		{
-		}
+	public BackupFailedException(string message, Exception innerException) : base(message, innerException)
+	{
+	}
 
-		protected BackupFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
-		{
-		}
+	protected BackupFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
+	{
 	}
 }
