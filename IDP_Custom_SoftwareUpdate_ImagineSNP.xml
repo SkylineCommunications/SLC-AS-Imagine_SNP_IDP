@@ -32,7 +32,7 @@
 			<Value>
 				<![CDATA[[Project:IDP_Custom_SoftwareUpdate_ImagineSNP_6]]]>
 			</Value>
-			<Param type="ref">C:\Skyline DataMiner\ProtocolScripts\DataMinerSolutions.dll</Param>
+			<Param type="ref">DataMinerSolutions.dll</Param>
 			<Param type="ref">mscorlib.dll</Param>
 			<Message>
 			</Message>
