@@ -49,6 +49,7 @@ DATE		VERSION		AUTHOR			COMMENTS
 */
 
 using System;
+using System.Runtime.Serialization;
 
 using Skyline.DataMiner.Automation;
 using Skyline.DataMiner.DataMinerSolutions.DataMinerSystem;
@@ -67,6 +68,7 @@ public class Script
 	/// <param name="engine">Link with SLAutomation process.</param>
 	public void Run(IEngine engine)
 	{
+		engine.Timeout = new TimeSpan(0, 30, 0);
 		try
 		{
 			softwareUpdate = new SoftwareUpdate(engine);
@@ -92,14 +94,18 @@ public class Script
 		IElement element = inputParameters.Element;
 		string ciType = engine.GetScriptParam("CI Type").Value.ToString();
 
+
+
+
 		engine.GenerateInformation("File location: " + inputParameters.ImageFileLocation);
 		IActionableElement dataMinerElement = engine.FindElement(element.AgentId, element.ElementId);
 		string sFileName = string.Format("SNP-Firmware-{0}.tgz", GetVersionBaseline(engine, ciType));
 
+
 		PushUpgradeToDevice(dataMinerElement, inputParameters.ImageFileLocation, sFileName);
 		ValidateResult(engine, dataMinerElement);
-	}
 
+	}
 	private static string GetVersionBaseline(IEngine engine, string primaryKey)
 	{
 		IActionableElement element = engine.FindElement("DataMiner IDP CI Types");
@@ -110,12 +116,15 @@ public class Script
 	{
 		try
 		{
-			//Changes Stacey
+			//Changes Stacey 
+
+
 			element.SetParameter(520, imageFileLocation);
 
 			element.SetParameter(510, FileName);
 
 			element.SetParameter(511, "1"); // Upload
+
 		}
 		catch (Exception e)
 		{
@@ -129,7 +138,7 @@ public class Script
 		engine.Sleep(300000);
 		bool restarting = false;
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 20; i++)
 		{
 			engine.Sleep(60000);
 
@@ -138,6 +147,7 @@ public class Script
 			if (elements.Length == 1)
 			{
 				restarting = true;
+
 			}
 			else
 			{
@@ -154,6 +164,28 @@ public class Script
 			throw new UpdateFailedException("Element remains in timeout");
 		}
 
+		dataMinerElement.SetParameter(50012, "1", "1"); //Refresh general parameters
+
 		softwareUpdate.NotifyProcessSuccess();
+	}
+}
+
+[Serializable]
+public class UpdateFailedException : Exception
+{
+	public UpdateFailedException()
+	{
+	}
+
+	public UpdateFailedException(string message) : base(message)
+	{
+	}
+
+	public UpdateFailedException(string message, Exception innerException) : base(message, innerException)
+	{
+	}
+
+	protected UpdateFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
+	{
 	}
 }
