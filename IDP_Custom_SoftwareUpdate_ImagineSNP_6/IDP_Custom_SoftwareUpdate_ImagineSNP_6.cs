@@ -147,7 +147,6 @@ public class Script
 			if (elements.Length == 1)
 			{
 				restarting = true;
-
 			}
 			else
 			{
@@ -167,25 +166,5 @@ public class Script
 		dataMinerElement.SetParameter(50012, "1", "1"); //Refresh general parameters
 
 		softwareUpdate.NotifyProcessSuccess();
-	}
-}
-
-[Serializable]
-public class UpdateFailedException : Exception
-{
-	public UpdateFailedException()
-	{
-	}
-
-	public UpdateFailedException(string message) : base(message)
-	{
-	}
-
-	public UpdateFailedException(string message, Exception innerException) : base(message, innerException)
-	{
-	}
-
-	protected UpdateFailedException(SerializationInfo info, StreamingContext context) : base(info, context)
-	{
 	}
 }
