@@ -49,6 +49,7 @@ DATE		VERSION		AUTHOR			COMMENT
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -61,6 +62,8 @@ using Skyline.DataMiner.Automation;
 using Skyline.DataMiner.DataMinerSolutions.IDP.ConfigurationManagement;
 using Skyline.DataMiner.DataMinerSolutions.IDP.Templates.Configuration;
 
+using static System.Net.WebRequestMethods;
+
 public class Script
 {
 	private Backup backupManager;
@@ -71,12 +74,15 @@ public class Script
 
 	public void Run(IEngine engine)
 	{
+		//same code as in the example
 		engine.SetFlag(RunTimeFlags.NoKeyCaching);
 		try
 		{
+			this.engine = engine;
+
 			// This will load the automation script's parameter data.
 			inputData = new BackupInputData(engine);
-			this.engine = engine;
+
 			// This method will communicate with the IDP solution, to provide the required feedback for the backup process.
 			backupManager = new Backup(inputData);
 
@@ -107,120 +113,6 @@ public class Script
 		}
 	}
 
-	private static bool Retry(Func<bool> func, TimeSpan timeout)
-	{
-		bool success;
-
-		Stopwatch sw = Stopwatch.StartNew();
-
-		do
-		{
-			success = func();
-			if (!success)
-			{
-				System.Threading.Thread.Sleep(100);
-			}
-		}
-		while (!success && sw.Elapsed <= timeout);
-
-		return success;
-	}
-
-	/// <summary>
-	/// </summary>
-	/// <param name="engine">The object that will communicate with the DMA.</param>
-	/// <param name="backupMethod"></param>
-	/// <returns></returns>
-	private string BackupDevice(IEngine engine, Func<IActionableElement, string> backupMethod)
-	{
-		string backup = String.Empty;
-
-		IActionableElement element = engine.FindElement(inputData.Element.AgentId, inputData.Element.ElementId);
-
-		const int BackupTimeoutMinutes = 15;
-
-		bool result = Retry(
-		() =>
-		{
-			// Run the backup method, that will provide you with the data. Depending on the method that was provided, it will return different data.
-			backup = backupMethod.Invoke(element);
-
-			return !String.IsNullOrWhiteSpace(backup);
-		},
-		TimeSpan.FromMinutes(BackupTimeoutMinutes));
-
-		if (!result)
-		{
-			throw new BackupFailedException($"No data was obtained from the element after {BackupTimeoutMinutes} minutes.");
-		}
-
-		return backup;
-	}
-
-	private void CheckTable(IActionableElement element, string fileName)
-	{
-		bool restarting = false;
-
-		for (int i = 0; i < 7; i++)
-		{
-			string[] primaryKeys = element.GetTablePrimaryKeys(3700);
-
-			if (primaryKeys.Contains(fileName))
-			{
-				restarting = true;
-				break;
-			}
-
-			engine.Sleep(15000);
-
-			Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
-
-			if (elements.Length == 1)
-			{
-				restarting = true;
-				break;
-			}
-
-			//read progress update
-		}
-		engine.GenerateInformation("Backup was found");
-		if (!restarting)
-		{
-			engine.GenerateInformation("ERR:ISSU Time out (> 7 min)");
-			throw new BackupFailedException("ISSU Unsuccesful");
-		}
-
-		for (int i = 0; i < 6; i++)
-		{
-			engine.GenerateInformation("MARK 2");
-			Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
-			engine.GenerateInformation("Check Element state");
-
-			if (elements.Length == 0)
-			{
-				engine.GenerateInformation("Active again");
-				restarting = false;
-
-				break;
-			}
-
-			engine.GenerateInformation("Element in Timeout");
-
-			engine.Sleep(60000);
-		}
-
-		if (restarting)
-		{
-			engine.GenerateInformation("ERR:Element remains in timeout (> 5 min)");
-			throw new BackupFailedException("Element remains in timeout");
-		}
-		else
-		{
-			engine.GenerateInformation("MARK 3");
-			engine.Sleep(60000); //wait for sysdescription to be updated.
-		}
-	}
-
 	/// <summary>
 	/// This method is a framework of how to backup a device, and then send that same data to IDP. Depending on the goal,
 	/// several options are presented inside, and only one of each should be selected.
@@ -228,6 +120,7 @@ public class Script
 	/// <param name="engine">The object that will communicate with the DMA.</param>
 	private void CreateAndSendBackup(IEngine engine)
 	{
+		//same code as in the example
 		/* *************
 		 * *Backup Code*
 		 * *************
@@ -265,6 +158,7 @@ public class Script
 		 * on the appropriate methods.
 		 */
 		string fullBackupData = BackupDevice(engine, GetDeviceFullBackupAsText);
+
 		engine.GenerateInformation("### : " + fullBackupData);
 
 		/* ******************
@@ -285,39 +179,157 @@ public class Script
 
 	/// <summary>
 	/// </summary>
+	/// <param name="engine">The object that will communicate with the DMA.</param>
+	/// <param name="backupMethod"></param>
+	/// <returns></returns>
+	private string BackupDevice(IEngine engine, Func<IActionableElement, string> backupMethod)
+	{
+		//same code as in the example
+		string backup = String.Empty;
+
+		IActionableElement element = engine.FindElement(inputData.Element.AgentId, inputData.Element.ElementId);
+
+		const int BackupTimeoutMinutes = 15;
+		const int BackupRetryMsInterval = 100;
+
+		bool result = GenericHelper.Retry(
+		() =>
+		{
+			// Run the backup method, that will provide you with the data. Depending on the method that was provided, it will return different data.
+			backup = backupMethod.Invoke(element);
+
+			return !String.IsNullOrWhiteSpace(backup);
+		},
+		TimeSpan.FromMinutes(BackupTimeoutMinutes),
+		BackupRetryMsInterval);
+
+		if (!result)
+		{
+			throw new BackupFailedException($"No data was obtained from the element after {BackupTimeoutMinutes} minutes.");
+		}
+
+		return backup;
+	}
+
+	/// <summary>
+	/// </summary>
 	/// <param name="element">The element object from where data can be fetched.</param>
 	/// <returns>The full backup data as text.</returns>
 	private string GetDeviceFullBackupAsText(IActionableElement element)
 	{
-		string elementName = "IDP-" + Regex.Replace(element.ElementName, @"\s", "");
-		string fileName;
-
 		string elementIp = element.PollingIP;
+		string elementName = Regex.Replace(element.ElementName, @"\s", string.Empty);
 
-		if (inputData.ConfigurationType == ConfigurationType.StartUp)
-		{
-			fileName = elementName + "-" + DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss");
-		}
-		else
-		{
-			throw new BackupFailedException($"{inputData.ConfigurationType} type not supported");
-		}
+		string backupPresetFileName = $"IDP-{elementName}-{DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss")}";
 
-		element.SetParameter(3692, elementIp);
-		element.SetParameter(3694, fileName);
-
-		element.SetParameter(3695, 1);
-
-		CheckTable(element, fileName);
+		CreateBackupPreset(element, backupPresetFileName);
 
 		// grab file from FTP to DM location
 		engine.GenerateInformation("Grab File to from FTP to DM Location");
 		var backup = new BackupDataSourceIp
 		{
 			SourceIp = elementIp,
-			FileName = fileName,
+			FileName = backupPresetFileName,
 		};
 
 		return JsonConvert.SerializeObject(backup);
+	}
+
+	private void CreateBackupPreset(IActionableElement element, string backupPresetFileName)
+	{
+		string elementIp = element.PollingIP;
+		string storedPresetFolderPath = Convert.ToString(element.GetParameter(3685 /* Preset folder path */));
+		string defaultBackupPresetFolderPath = @"\\\\10.110.29.20\\c$\\Skyline DataMiner\\Documents\\Imagine Selenio\\Configurations";
+
+		element.SetParameter(3692 /* Preset source */, elementIp);
+		element.SetParameter(3694 /* Preset name */, backupPresetFileName);
+		element.SetParameter(3685 /* Preset folder path */, defaultBackupPresetFolderPath);
+
+		element.SetParameter(3695 /* Create a preset button */, 1);
+
+		SaveBackupPresetInTable(element, backupPresetFileName);
+
+		element.SetParameter(3685 /* Preset folder path */, storedPresetFolderPath);
+	}
+
+	private void SaveBackupPresetInTable(IActionableElement element, string backupPresetFileName)
+	{
+		bool restarting = IsElementRestartingAfterBackup(element, backupPresetFileName);
+
+		if (!restarting)
+		{
+			engine.GenerateInformation("ERR:ISSU Time out (> 5 min)");
+			throw new BackupFailedException("ISSU Unsuccessful");
+		}
+
+		bool isRestarted = IsElementRestartedAfterBackup(element);
+
+		if (!isRestarted)
+		{
+			engine.GenerateInformation("ERR:Element remains in timeout (> 5 min)");
+			throw new BackupFailedException("Element remains in timeout");
+		}
+		else
+		{
+			engine.GenerateInformation("Preset backup stored in table and element is restared.");
+			engine.Sleep(60000); //wait for sys-description to be updated.
+		}
+	}
+
+	private bool IsElementRestartedAfterBackup(IActionableElement element)
+	{
+		const int restartedTimeoutInMinutes = 5;
+		const int restartedRetryInterval = 60_000;
+
+		bool isRestarted = GenericHelper.Retry(
+			() =>
+			{
+				Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
+				if (elements.Length == 0)
+				{
+					engine.GenerateInformation("Element is active again.");
+					return true;
+				}
+
+				engine.GenerateInformation("Element is still in timeout...");
+
+				return false;
+
+			},
+			TimeSpan.FromMinutes(restartedTimeoutInMinutes),
+			restartedRetryInterval);
+
+		return isRestarted;
+	}
+
+	private bool IsElementRestartingAfterBackup(IActionableElement element, string presetBackupFileName)
+	{
+		const int restartingTimeoutInMinutes = 5;
+		const int restartingRetryInterval = 15_000;
+
+		bool restarting = GenericHelper.Retry(
+			() =>
+			{
+				string[] primaryKeys = element.GetTablePrimaryKeys(3700 /* Presets table */);
+
+				if (primaryKeys.Contains(presetBackupFileName))
+				{
+					engine.GenerateInformation("Preset backup stored in table.");
+					return true;
+				}
+
+				Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
+
+				if (elements.Length == 1)
+				{
+					engine.GenerateInformation("Element in timeout...");
+					return true;
+				}
+
+				return false;
+			},
+			TimeSpan.FromMinutes(restartingTimeoutInMinutes),
+			restartingRetryInterval);
+		return restarting;
 	}
 }
