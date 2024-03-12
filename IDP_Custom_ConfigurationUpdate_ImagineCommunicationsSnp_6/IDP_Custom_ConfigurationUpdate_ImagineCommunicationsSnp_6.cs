@@ -50,6 +50,7 @@ DATE		VERSION		AUTHOR			COMMENT
 
 using System;
 using System.IO;
+using System.Linq;
 
 using IDP.Common;
 
@@ -61,16 +62,24 @@ using Skyline.DataMiner.DataMinerSolutions.IDP.ConfigurationManagement;
 public class Script
 {
 	private Update configurationUpdate;
+	private IEngine engine;
 
 	public void Run(IEngine engine)
 	{
 		try
 		{
+			this.engine = engine;
+			engine.GenerateInformation("Script started.");
+
 			// This method will communicate with the IDP solution, to provide the required feedback for the update process.
 			configurationUpdate = new Update(engine);
 
 			// When the configuration update process starts normally, this method should be called.
 			configurationUpdate.NotifyProcessStarted();
+			engine.GenerateInformation(configurationUpdate.ToString());
+
+			engine.GenerateInformation(configurationUpdate.InputData.FileLocation);
+
 
 			string filePath = configurationUpdate.InputData.FileLocation;
 
@@ -129,18 +138,98 @@ public class Script
 			var backupData = JsonConvert.DeserializeObject<BackupDataSourceIp>(data);
 
 			Element element = engine.FindElement(configurationUpdate.InputData.Element.AgentId, configurationUpdate.InputData.Element.ElementId);
+			engine.GenerateInformation("Backup filename: " + backupData.FileName);
 
-			element.SetParameter(3706, backupData.FileName, "1");
-			/*
-			element.SetParameter(3681, 1);
-			element.SetParameter(3683, backupData.FileName);
-			*/
+			var presetExists = CheckIfPresetExistsOnDevice(element, backupData.FileName);
 
-			return true;
+			if (!presetExists)
+			{
+				ExportPresetToDevice(element, backupData.FileName);
+			}
+
+			element.SetParameter(3698 /* Reboot after load */, "1");
+			element.SetParameter(3706 /* Load button for one row in preset table */, backupData.FileName, "1");
+
+			engine.Sleep(60000);
+			var isRestarted = RestartElement(element);
+
+			return isRestarted;
 		}
 		catch (Exception)
 		{
 			return false;
 		}
+	}
+
+	private void ExportPresetToDevice(Element element, string fileName)
+	{
+		engine.GenerateInformation("Exporting backup preset to device...");
+
+		string defaultBackupPresetFolderPath = @"\\10.110.29.20\c$\Skyline DataMiner\Documents\Imagine Selenio\Configurations";
+		string storedPresetFolderPath = Convert.ToString(element.GetParameter(3685 /* Preset folder path */));
+
+		element.SetParameter(3685 /* Preset folder path */, defaultBackupPresetFolderPath);
+		element.SetParameter(3681 /* Get DMA presets button */, "1");
+		engine.Sleep(5000);
+		element.SetParameter(3683 /* Preset filename */, fileName + ".prst");
+
+		engine.Sleep(10000);
+
+		element.SetParameter(3685 /* Preset folder path */, storedPresetFolderPath);
+	}
+
+	private bool CheckIfPresetExistsOnDevice(Element element, string backupPresetFileName)
+	{
+		string[] primaryKeys = element.GetTablePrimaryKeys(3700 /* Presets table */);
+
+		if (primaryKeys.Contains(backupPresetFileName))
+		{
+			engine.GenerateInformation("Preset backup exists in table.");
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool RestartElement(IActionableElement element)
+	{
+		const int restartingTimeoutInMinutes = 10;
+		const int restartingRetryInterval = 10_000;
+
+		bool isActive = GenericHelper.Retry(
+			() =>
+			{
+				engine.GenerateInformation("Stopping the element...");
+				element.Stop();
+				engine.Sleep(10000);
+
+				engine.GenerateInformation("Activating element again...");
+				element.Start();
+				engine.Sleep(10000);
+
+				Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
+
+				if (elements.Length == 1)
+				{
+					engine.GenerateInformation("Element in timeout...");
+					return false;
+				}
+
+				return true;
+			},
+			TimeSpan.FromMinutes(restartingTimeoutInMinutes),
+			restartingRetryInterval);
+
+		if (!isActive)
+		{
+			engine.GenerateInformation("ERR: Element in timeout... Please check.");
+			return false;
+		}
+		else
+		{
+			engine.GenerateInformation("The backup preset is loaded and element is active again.");
+			return true;
+		}
+
 	}
 }
