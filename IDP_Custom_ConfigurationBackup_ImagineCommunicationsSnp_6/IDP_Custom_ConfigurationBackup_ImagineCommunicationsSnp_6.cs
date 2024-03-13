@@ -45,6 +45,7 @@ Revision History:
 
 DATE		VERSION		AUTHOR			COMMENT
 11/04/2022	1.0.0.1		ADK, Skyline	Initial version.
+13/03/2024  1.0.0.2     DBO, Skyline    Fixed backup functionality based on protocol changes.
 
 */
 
