@@ -147,15 +147,9 @@ public class Script
 				ExportPresetToDevice(element, backupData.FileName);
 			}
 
-			element.SetParameter(3698 /* Reboot after load */, "1"); // NOTE: If rebooting is not allowed, comment this line
-
 			element.SetParameter(3706 /* Load button for one row in preset table */, backupData.FileName, "1");
-			engine.GenerateInformation("Loading preset...");
-			engine.Sleep(1_000);
-
-
-			engine.GenerateInformation("Rebooting the device...");  // NOTE: If rebooting is not allowed, comment this line
-			engine.Sleep(60_000);  // NOTE: If rebooting is not allowed, comment this line
+			engine.GenerateInformation("Loading the new preset can take up to 8 minutes. Please be patient...");
+			engine.Sleep(480_000);
 
 			var isRestarted = RestartElement(element);
 
@@ -206,8 +200,11 @@ public class Script
 			() =>
 			{
 				engine.GenerateInformation("Restarting the element...");
-				element.Restart();
-				engine.Sleep(15_000);
+				element.Stop();
+				engine.Sleep(10_000);
+
+				element.Start();
+				engine.Sleep(40_000);
 
 				Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
 
