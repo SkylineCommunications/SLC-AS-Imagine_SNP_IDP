@@ -147,10 +147,16 @@ public class Script
 				ExportPresetToDevice(element, backupData.FileName);
 			}
 
-			element.SetParameter(3698 /* Reboot after load */, "1");
-			element.SetParameter(3706 /* Load button for one row in preset table */, backupData.FileName, "1");
+			element.SetParameter(3698 /* Reboot after load */, "1"); // NOTE: If rebooting is not allowed, comment this line
 
-			engine.Sleep(60000);
+			element.SetParameter(3706 /* Load button for one row in preset table */, backupData.FileName, "1");
+			engine.GenerateInformation("Loading preset...");
+			engine.Sleep(1_000);
+
+
+			engine.GenerateInformation("Rebooting the device...");  // NOTE: If rebooting is not allowed, comment this line
+			engine.Sleep(60_000);  // NOTE: If rebooting is not allowed, comment this line
+
 			var isRestarted = RestartElement(element);
 
 			return isRestarted;
@@ -170,10 +176,10 @@ public class Script
 
 		element.SetParameter(3685 /* Preset folder path */, defaultBackupPresetFolderPath);
 		element.SetParameter(3681 /* Get DMA presets button */, "1");
-		engine.Sleep(5000);
+		engine.Sleep(5_000);
 		element.SetParameter(3683 /* Preset filename */, fileName + ".prst");
 
-		engine.Sleep(10000);
+		engine.Sleep(10_000);
 
 		element.SetParameter(3685 /* Preset folder path */, storedPresetFolderPath);
 	}
@@ -199,13 +205,9 @@ public class Script
 		bool isActive = GenericHelper.Retry(
 			() =>
 			{
-				engine.GenerateInformation("Stopping the element...");
-				element.Stop();
-				engine.Sleep(10000);
-
-				engine.GenerateInformation("Activating element again...");
-				element.Start();
-				engine.Sleep(10000);
+				engine.GenerateInformation("Restarting the element...");
+				element.Restart();
+				engine.Sleep(15_000);
 
 				Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
 
@@ -230,6 +232,5 @@ public class Script
 			engine.GenerateInformation("The backup preset is loaded and element is active again.");
 			return true;
 		}
-
 	}
 }
