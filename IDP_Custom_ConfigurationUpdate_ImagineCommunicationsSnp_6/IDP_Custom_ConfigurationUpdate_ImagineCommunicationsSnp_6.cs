@@ -70,17 +70,12 @@ public class Script
 		try
 		{
 			this.engine = engine;
-			engine.GenerateInformation("Script started.");
 
 			// This method will communicate with the IDP solution, to provide the required feedback for the update process.
 			configurationUpdate = new Update(engine);
 
 			// When the configuration update process starts normally, this method should be called.
 			configurationUpdate.NotifyProcessStarted();
-			engine.GenerateInformation(configurationUpdate.ToString());
-
-			engine.GenerateInformation(configurationUpdate.InputData.FileLocation);
-
 
 			string filePath = configurationUpdate.InputData.FileLocation;
 
@@ -139,7 +134,6 @@ public class Script
 			var backupData = JsonConvert.DeserializeObject<BackupDataSourceIp>(data);
 
 			Element element = engine.FindElement(configurationUpdate.InputData.Element.AgentId, configurationUpdate.InputData.Element.ElementId);
-			engine.GenerateInformation("Backup filename: " + backupData.FileName);
 
 			var presetExists = CheckIfPresetExistsOnDevice(element, backupData.FileName);
 
@@ -152,9 +146,9 @@ public class Script
 			engine.GenerateInformation("Loading the new preset can take up to 8 minutes. Please be patient...");
 			engine.Sleep(480_000);
 
-			var isRestarted = RestartElement(element);
+			var isOperational = IsInOperativeState(element);
 
-			return isRestarted;
+			return isOperational;
 		}
 		catch (Exception)
 		{
@@ -192,20 +186,18 @@ public class Script
 		return false;
 	}
 
-	private bool RestartElement(IActionableElement element)
+	private bool IsInOperativeState(IActionableElement element)
 	{
-		const int restartingTimeoutInMinutes = 10;
+		const int restartingTimeoutInMinutes = 2;
 		const int restartingRetryInterval = 10_000;
 
 		bool isActive = GenericHelper.Retry(
 			() =>
 			{
 				engine.GenerateInformation("Restarting the element...");
-				element.Stop();
-				engine.Sleep(10_000);
-
-				element.Start();
-				engine.Sleep(40_000);
+				var timeoutThreshold = element.ElementInfo.MainPort.TimeoutTime;
+				element.Restart();
+				engine.Sleep(timeoutThreshold);
 
 				Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
 
