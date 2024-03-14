@@ -49,11 +49,12 @@ DATE		VERSION		AUTHOR			COMMENTS
 */
 
 using System;
-using System.Runtime.Serialization;
 
 using Skyline.DataMiner.Automation;
 using Skyline.DataMiner.DataMinerSolutions.DataMinerSystem;
 using Skyline.DataMiner.DataMinerSolutions.IDP.Software;
+
+using Core.Generic;
 
 /// <summary>
 /// DataMiner Script Class.
@@ -94,18 +95,14 @@ public class Script
 		IElement element = inputParameters.Element;
 		string ciType = engine.GetScriptParam("CI Type").Value.ToString();
 
-
-
-
 		engine.GenerateInformation("File location: " + inputParameters.ImageFileLocation);
 		IActionableElement dataMinerElement = engine.FindElement(element.AgentId, element.ElementId);
 		string sFileName = string.Format("SNP-Firmware-{0}.tgz", GetVersionBaseline(engine, ciType));
 
-
 		PushUpgradeToDevice(dataMinerElement, inputParameters.ImageFileLocation, sFileName);
 		ValidateResult(engine, dataMinerElement);
-
 	}
+
 	private static string GetVersionBaseline(IEngine engine, string primaryKey)
 	{
 		IActionableElement element = engine.FindElement("DataMiner IDP CI Types");
@@ -116,15 +113,13 @@ public class Script
 	{
 		try
 		{
-			//Changes Stacey 
-
+			//Changes Stacey
 
 			element.SetParameter(520, imageFileLocation);
 
 			element.SetParameter(510, FileName);
 
 			element.SetParameter(511, "1"); // Upload
-
 		}
 		catch (Exception e)
 		{

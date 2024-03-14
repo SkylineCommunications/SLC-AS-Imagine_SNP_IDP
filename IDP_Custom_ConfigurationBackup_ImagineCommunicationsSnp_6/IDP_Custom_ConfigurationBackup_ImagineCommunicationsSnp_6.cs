@@ -50,9 +50,11 @@ DATE		VERSION		AUTHOR			COMMENT
 */
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+
+using Core.Defaults;
+using Core.Generic;
 
 using IDP.Common;
 
@@ -154,8 +156,6 @@ public class Script
 		 */
 		string fullBackupData = BackupDevice(engine, GetDeviceFullBackupAsText);
 
-		engine.GenerateInformation("### : " + fullBackupData);
-
 		/* ******************
 		 * *Send Backup Code*
 		 * ******************
@@ -172,11 +172,10 @@ public class Script
 		backupManager.SendBackupContentToIdp(fullBackupData);
 	}
 
-	/// <summary>
-	/// </summary>
+	/// <summary> This is a main method used for creating a backup of the device. It uses retry mechanism to run the backup method. </summary>
 	/// <param name="engine">The object that will communicate with the DMA.</param>
-	/// <param name="backupMethod"></param>
-	/// <returns></returns>
+	/// <param name="backupMethod">Backup method used for creating a backup content.</param>
+	/// <returns>Backup content data.</returns>
 	private string BackupDevice(IEngine engine, Func<IActionableElement, string> backupMethod)
 	{
 		string backup = String.Empty;
@@ -206,7 +205,7 @@ public class Script
 	}
 
 	/// <summary>
-	/// GetDeviceFullBackupAsText
+	/// This is a method used for creating backup as text.
 	/// </summary>
 	/// <param name="element">The element object from where data can be fetched.</param>
 	/// <returns>The full backup data as text.</returns>
@@ -217,11 +216,11 @@ public class Script
 
 		string backupPresetFileName = $"IDP-{elementName}-{DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss")}";
 
-		SaveBackupPresetOnDevice(element, backupPresetFileName);
+		CreateBackupPresetOnDevice(element, backupPresetFileName);
 		DownloadBackupPresetFromDevice(element, backupPresetFileName);
 
 		// grab file from FTP to DM location
-		engine.GenerateInformation("Grab File to from FTP to DM Location");
+		engine.GenerateInformation("Grab File from FTP to DM Location");
 		var backup = new BackupDataSourceIp
 		{
 			SourceIp = elementIp,
@@ -233,16 +232,17 @@ public class Script
 
 	private void DownloadBackupPresetFromDevice(IActionableElement element, string backupPresetFileName)
 	{
-		string defaultBackupPresetFolderPath = @"\\10.110.29.20\c$\Skyline DataMiner\Documents\Imagine Selenio\Configurations";
+		string defaultBackupPresetFolderPath = GlobalDefaults.DefaultBackupPresetFolderPath;
 		string storedPresetFolderPath = Convert.ToString(element.GetParameter(3685 /* Preset folder path */));
 
 		element.SetParameter(3685 /* Preset folder path */, defaultBackupPresetFolderPath);
 		element.SetParameter(3707 /* Preset download button */, backupPresetFileName, "1");
-		engine.Sleep(5000);
+
+		engine.Sleep(5_000);
 		element.SetParameter(3685 /* Preset folder path */, storedPresetFolderPath);
 	}
 
-	private void SaveBackupPresetOnDevice(IActionableElement element, string backupPresetFileName)
+	private void CreateBackupPresetOnDevice(IActionableElement element, string backupPresetFileName)
 	{
 		string elementIp = element.PollingIP;
 
@@ -251,18 +251,28 @@ public class Script
 
 		element.SetParameter(3695 /* Create a preset button */, 1);
 
-		engine.Sleep(5000);
+		const int CreateMethodTimeoutMinutes = 2;
+		const int CreateMethodRetryMsInterval = 100;
 
-		string[] primaryKeys = element.GetTablePrimaryKeys(3700 /* Presets table */);
+		bool isPresetCreated = GenericHelper.Retry(
+		() =>
+		{
+			string[] primaryKeys = element.GetTablePrimaryKeys(3700 /* Presets table */);
 
-		if (primaryKeys.Contains(backupPresetFileName))
+			if (primaryKeys.Contains(backupPresetFileName))
+			{
+				engine.GenerateInformation("Preset backup stored in table.");
+				return true;
+			}
+
+			return false;
+		},
+		TimeSpan.FromMinutes(CreateMethodTimeoutMinutes),
+		CreateMethodRetryMsInterval);
+
+		if (!isPresetCreated)
 		{
-			engine.GenerateInformation("Preset backup stored in table.");
-		}
-		else
-		{
-			engine.GenerateInformation("ERR: Preset backup could not be stored.");
-			engine.Sleep(5000); //wait for sys-description to be updated.
+			throw new BackupFailedException("Preset backup could not be stored on the device.");
 		}
 	}
 }

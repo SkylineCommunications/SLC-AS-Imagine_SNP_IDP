@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>744e2a66-92cf-473b-a7d9-2711975ece3e</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Defaults\GlobalDefaults.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Generic\BackupFailedException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Generic\GenericHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Generic\UpdateFailedException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDP\Common.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Defaults\" />
+  </ItemGroup>
+</Project>

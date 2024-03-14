@@ -31,4 +31,5 @@
       <UserProperties DisLinkedXmlFile="..\IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp.xml" DisProjectType="automationScriptProject" DisLinkId="6" />
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\Core\Core.projitems" Label="Shared" />
 </Project>

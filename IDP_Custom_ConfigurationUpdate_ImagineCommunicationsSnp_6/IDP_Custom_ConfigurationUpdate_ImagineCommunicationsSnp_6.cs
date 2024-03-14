@@ -53,6 +53,9 @@ using System;
 using System.IO;
 using System.Linq;
 
+using Core.Defaults;
+using Core.Generic;
+
 using IDP.Common;
 
 using Newtonsoft.Json;
@@ -160,7 +163,7 @@ public class Script
 	{
 		engine.GenerateInformation("Exporting backup preset to device...");
 
-		string defaultBackupPresetFolderPath = @"\\10.110.29.20\c$\Skyline DataMiner\Documents\Imagine Selenio\Configurations";
+		string defaultBackupPresetFolderPath = GlobalDefaults.DefaultBackupPresetFolderPath;
 		string storedPresetFolderPath = Convert.ToString(element.GetParameter(3685 /* Preset folder path */));
 
 		element.SetParameter(3685 /* Preset folder path */, defaultBackupPresetFolderPath);
@@ -195,8 +198,10 @@ public class Script
 			() =>
 			{
 				engine.GenerateInformation("Restarting the element...");
+
 				var timeoutThreshold = element.ElementInfo.MainPort.TimeoutTime;
 				element.Restart();
+
 				engine.Sleep(timeoutThreshold);
 
 				Element[] elements = engine.FindElements(new ElementFilter { DataMinerID = element.DmaId, ElementID = element.ElementId, TimeoutOnly = true });
@@ -215,7 +220,7 @@ public class Script
 		if (!isActive)
 		{
 			engine.GenerateInformation("ERR: Element in timeout... Please check.");
-			return false;
+			throw new UpdateFailedException("Element remains in timeout.");
 		}
 		else
 		{

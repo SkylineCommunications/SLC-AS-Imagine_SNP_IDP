@@ -64,6 +64,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationUpd
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp_6", "IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp_6\IDP_Custom_ConfigurationBackup_ImagineCommunicationsSnp_6.csproj", "{E4E03673-4447-453D-B65A-80C88E6AC912}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Core", "Core\Core.shproj", "{744E2A66-92CF-473B-A7D9-2711975ECE3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,5 +103,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61067029-639C-435D-AF0F-65BCCC153973}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Core\Core.projitems*{744e2a66-92cf-473b-a7d9-2711975ece3e}*SharedItemsImports = 13
+		Core\Core.projitems*{8d7c6dbb-3696-41ff-bbdb-b848e8c85919}*SharedItemsImports = 5
+		Core\Core.projitems*{d522125e-a383-46af-a656-237ca83d8231}*SharedItemsImports = 5
+		Core\Core.projitems*{e4e03673-4447-453d-b65a-80c88e6ac912}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
