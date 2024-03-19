@@ -73,6 +73,7 @@ public class Script
 		try
 		{
 			this.engine = engine;
+			engine.SetFlag(RunTimeFlags.NoKeyCaching);
 
 			// This method will communicate with the IDP solution, to provide the required feedback for the update process.
 			configurationUpdate = new Update(engine);
@@ -171,8 +172,6 @@ public class Script
 
 		TriggerExportFunctionality(element, fileName);
 
-		engine.Sleep(15_000);
-
 		element.SetParameter(50012 /* Poll Manager Actions - Refresh button */, "Preset", "1");
 		engine.Sleep(5_000);
 
@@ -202,8 +201,8 @@ public class Script
 
 	private bool IsPresetAvailable(Element element, string backupPresetFileName)
 	{
-		const int presetTableCheckTimeoutInMinutes = 2;
-		const int presetTableCheckRetryInterval = 10_000;
+		const int presetTableCheckTimeout = 5;
+		const int presetTableCheckRetryInterval = 1_000;
 
 		bool isPresetAvailable = GenericHelper.Retry(
 			() =>
@@ -218,7 +217,7 @@ public class Script
 
 				return false;
 			},
-			TimeSpan.FromMinutes(presetTableCheckTimeoutInMinutes),
+			TimeSpan.FromSeconds(presetTableCheckTimeout),
 			presetTableCheckRetryInterval);
 
 		return isPresetAvailable;
@@ -235,7 +234,6 @@ public class Script
 				engine.GenerateInformation("Restarting the element...");
 
 				var timeoutThreshold = element.ElementInfo.MainPort.TimeoutTime;
-				element.Restart();
 
 				engine.Sleep(timeoutThreshold);
 
