@@ -138,11 +138,14 @@ public class Script
 
 			Element element = engine.FindElement(configurationUpdate.InputData.Element.AgentId, configurationUpdate.InputData.Element.ElementId);
 
-			VerifyPresetAvailability(element, backupData.FileName);
+			bool isPresetAvailable = IsPresetAvailable(element, backupData.FileName);
 
-			element.SetParameter(3706 /* Load button for one row in preset table */, backupData.FileName, "1");
-			engine.GenerateInformation("Loading the new preset can take up to 8 minutes. Please be patient...");
-			engine.Sleep(480_000);
+			if (!isPresetAvailable)
+			{
+				ExportPresetToDevice(element, backupData.FileName);
+			}
+
+			LoadPreset(element, backupData.FileName);
 
 			var isActive = IsElementActive(element);
 
@@ -154,27 +157,53 @@ public class Script
 		}
 	}
 
+	private void LoadPreset(Element element, string backupPresetFileName)
+	{
+		engine.GenerateInformation("Loading the new preset can take up to 8 minutes. Please be patient...");
+
+		element.SetParameter(3706 /* Load button for one row in preset table */, backupPresetFileName, "1");
+		engine.Sleep(480_000);
+	}
+
 	private void ExportPresetToDevice(Element element, string fileName)
 	{
 		engine.GenerateInformation("Exporting backup preset to device...");
 
-		string defaultBackupPresetFolderPath = GlobalDefaults.DefaultBackupPresetFolderPath;
+		TriggerExportFunctionality(element, fileName);
+
+		engine.Sleep(15_000);
+
+		element.SetParameter(50012 /* Poll Manager Actions - Refresh button */, "Preset", "1");
+		engine.Sleep(5_000);
+
+		bool isPresetExported = IsPresetAvailable(element, fileName);
+		if (!isPresetExported)
+		{
+			engine.GenerateInformation("ERR: Preset is not exported... Please be aware that this device has a limitation where only 20 presets can be stored.");
+			throw new UpdateFailedException("Preset could not be exported.");
+		}
+
+	}
+
+	private void TriggerExportFunctionality(Element element, string fileName)
+	{
 		string storedPresetFolderPath = Convert.ToString(element.GetParameter(3685 /* Preset folder path */));
+		string defaultBackupPresetFolderPath = GlobalDefaults.DefaultBackupPresetFolderPath;
 
 		element.SetParameter(3685 /* Preset folder path */, defaultBackupPresetFolderPath);
 		element.SetParameter(3681 /* Get DMA presets button */, "1");
-		engine.Sleep(5_000);
-		element.SetParameter(3683 /* Preset filename */, fileName + ".prst");
 
 		engine.Sleep(5_000);
+		element.SetParameter(3683 /* Preset filename - write parameter triggers export */, fileName + ".prst");
 
+		engine.Sleep(5_000);
 		element.SetParameter(3685 /* Preset folder path */, storedPresetFolderPath);
 	}
 
-	private void VerifyPresetAvailability(Element element, string backupPresetFileName)
+	private bool IsPresetAvailable(Element element, string backupPresetFileName)
 	{
 		const int presetTableCheckTimeoutInMinutes = 2;
-		const int presetTableCheckRetryInterval = 5_000;
+		const int presetTableCheckRetryInterval = 10_000;
 
 		bool isPresetAvailable = GenericHelper.Retry(
 			() =>
@@ -187,19 +216,12 @@ public class Script
 					return true;
 				}
 
-				ExportPresetToDevice(element, backupPresetFileName);
-
-				element.SetParameter(50012 /* Poll Manager Actions - Refresh button */, "Preset", "1");
 				return false;
 			},
 			TimeSpan.FromMinutes(presetTableCheckTimeoutInMinutes),
 			presetTableCheckRetryInterval);
 
-		if (!isPresetAvailable)
-		{
-			engine.GenerateInformation("ERR: Preset is not available in preset table... Please be aware that this device has a limitation where only 20 presets can be stored.");
-			throw new UpdateFailedException("Preset is not available in preset table.");
-		}
+		return isPresetAvailable;
 	}
 
 	private bool IsElementActive(IActionableElement element)
