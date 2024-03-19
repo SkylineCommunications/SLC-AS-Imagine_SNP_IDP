@@ -138,20 +138,15 @@ public class Script
 
 			Element element = engine.FindElement(configurationUpdate.InputData.Element.AgentId, configurationUpdate.InputData.Element.ElementId);
 
-			var presetExists = CheckIfPresetExistsOnDevice(element, backupData.FileName);
-
-			if (!presetExists)
-			{
-				ExportPresetToDevice(element, backupData.FileName);
-			}
+			VerifyPresetAvailability(element, backupData.FileName);
 
 			element.SetParameter(3706 /* Load button for one row in preset table */, backupData.FileName, "1");
 			engine.GenerateInformation("Loading the new preset can take up to 8 minutes. Please be patient...");
 			engine.Sleep(480_000);
 
-			var isOperational = IsInOperativeState(element);
+			var isActive = IsElementActive(element);
 
-			return isOperational;
+			return isActive;
 		}
 		catch (Exception)
 		{
@@ -171,25 +166,43 @@ public class Script
 		engine.Sleep(5_000);
 		element.SetParameter(3683 /* Preset filename */, fileName + ".prst");
 
-		engine.Sleep(10_000);
+		engine.Sleep(5_000);
 
 		element.SetParameter(3685 /* Preset folder path */, storedPresetFolderPath);
 	}
 
-	private bool CheckIfPresetExistsOnDevice(Element element, string backupPresetFileName)
+	private void VerifyPresetAvailability(Element element, string backupPresetFileName)
 	{
-		string[] primaryKeys = element.GetTablePrimaryKeys(3700 /* Presets table */);
+		const int presetTableCheckTimeoutInMinutes = 2;
+		const int presetTableCheckRetryInterval = 5_000;
 
-		if (primaryKeys.Contains(backupPresetFileName))
+		bool isPresetAvailable = GenericHelper.Retry(
+			() =>
+			{
+				string[] primaryKeys = element.GetTablePrimaryKeys(3700 /* Presets table */);
+
+				if (primaryKeys.Contains(backupPresetFileName))
+				{
+					engine.GenerateInformation("The backup preset exists in table.");
+					return true;
+				}
+
+				ExportPresetToDevice(element, backupPresetFileName);
+
+				element.SetParameter(50012 /* Poll Manager Actions - Refresh button */, "Preset", "1");
+				return false;
+			},
+			TimeSpan.FromMinutes(presetTableCheckTimeoutInMinutes),
+			presetTableCheckRetryInterval);
+
+		if (!isPresetAvailable)
 		{
-			engine.GenerateInformation("Preset backup exists in table.");
-			return true;
+			engine.GenerateInformation("ERR: Preset is not available in preset table... Please be aware that this device has a limitation where only 20 presets can be stored.");
+			throw new UpdateFailedException("Preset is not available in preset table.");
 		}
-
-		return false;
 	}
 
-	private bool IsInOperativeState(IActionableElement element)
+	private bool IsElementActive(IActionableElement element)
 	{
 		const int restartingTimeoutInMinutes = 2;
 		const int restartingRetryInterval = 10_000;
