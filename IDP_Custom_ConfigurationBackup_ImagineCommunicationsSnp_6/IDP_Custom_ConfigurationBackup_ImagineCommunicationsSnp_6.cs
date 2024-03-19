@@ -252,7 +252,7 @@ public class Script
 		element.SetParameter(3695 /* Create a preset button */, 1);
 
 		const int CreateMethodTimeoutMinutes = 2;
-		const int CreateMethodRetryMsInterval = 100;
+		const int CreateMethodRetryMsInterval = 5_000;
 
 		bool isPresetCreated = GenericHelper.Retry(
 		() =>
@@ -265,6 +265,7 @@ public class Script
 				return true;
 			}
 
+			element.SetParameter(50012 /* Poll Manager Actions - Refresh button */, "Preset", "1");
 			return false;
 		},
 		TimeSpan.FromMinutes(CreateMethodTimeoutMinutes),
